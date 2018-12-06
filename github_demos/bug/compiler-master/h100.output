@@ -1,0 +1,3217 @@
+语法
+
+    0 $accept: routines $end
+
+    1 routines: %empty
+    2         | routines routine
+
+    3 routine: function
+    4        | stmt
+
+    5 stmts: %empty
+    6      | stmts stmt
+
+    7 function_header: FUNC IDENTIFIER '(' ')'
+    8                | FUNC IDENTIFIER '(' IDENTIFIER ')'
+    9                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ')'
+   10                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   11                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   12                | CFUNC IDENTIFIER '(' ')'
+   13                | CFUNC IDENTIFIER '(' IDENTIFIER ')'
+   14                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ')'
+   15                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+   17 function: function_header '{' stmts '}'
+
+   18 expr: INTEGER
+   19     | CHAR
+   20     | STRING
+   21     | variable
+   22     | IDENTIFIER '(' ')'
+   23     | IDENTIFIER '(' expr ')'
+   24     | IDENTIFIER '(' expr ',' expr ')'
+   25     | IDENTIFIER '(' expr ',' expr ',' expr ')'
+   26     | IDENTIFIER '(' expr ',' expr ',' expr ',' expr ')'
+   27     | expr '+' expr
+   28     | expr '-' expr
+   29     | expr '*' expr
+   30     | expr '/' expr
+   31     | expr '%' expr
+   32     | expr '<' expr
+   33     | expr '>' expr
+   34     | expr EQ expr
+   35     | expr NE expr
+   36     | expr GE expr
+   37     | expr LE expr
+   38     | '!' expr
+   39     | '+' expr
+   40     | '-' expr
+   41     | expr AND expr
+   42     | expr OR expr
+   43     | variable '=' expr
+   44     | '(' expr ')'
+   45     | '&' IDENTIFIER
+
+   46 variable: IDENTIFIER
+   47         | IDENTIFIER '[' expr ']'
+   48         | IDENTIFIER '[' expr ']' '[' expr ']'
+   49         | IDENTIFIER '[' expr ']' '[' expr ']' '[' expr ']'
+   50         | '$' expr
+
+   51 if_prefix: IF '(' expr ')'
+
+   52 stmt: ';'
+   53     | expr ';'
+   54     | error ';'
+   55     | '{' stmts '}'
+   56     | VAR IDENTIFIER ';'
+   57     | VAR IDENTIFIER '=' expr ';'
+   58     | VAR IDENTIFIER '[' ']' '=' STRING ';'
+   59     | VAR IDENTIFIER '[' INTEGER ']' ';'
+   60     | VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' ';'
+   61     | VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' '[' INTEGER ']' ';'
+   62     | IDENTIFIER '[' expr ETC ']' '=' STRING ';'
+
+   63 @1: %empty
+
+   64 stmt: FOR '(' expr ';' expr ';' expr ')' @1 stmt
+
+   65 $@2: %empty
+
+   66 stmt: WHILE '(' expr ')' $@2 stmt
+   67     | if_prefix stmt
+
+   68 @3: %empty
+
+   69 stmt: if_prefix stmt ELSE @3 stmt
+   70     | RET expr ';'
+   71     | RET ';'
+   72     | PRINT expr ';'
+   73     | PRINTLN expr ';'
+   74     | GET variable ';'
+   75     | GETCHAR variable ';'
+   76     | GETLINE variable ';'
+   77     | CONT ';'
+   78     | BREAK ';'
+   79     | EXIT ';'
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'!' (33) 38
+'$' (36) 50
+'%' (37) 31
+'&' (38) 45
+'(' (40) 7 8 9 10 11 12 13 14 15 16 22 23 24 25 26 44 51 64 66
+')' (41) 7 8 9 10 11 12 13 14 15 16 22 23 24 25 26 44 51 64 66
+'*' (42) 29
+'+' (43) 27 39
+',' (44) 9 10 11 14 15 16 24 25 26
+'-' (45) 28 40
+'/' (47) 30
+';' (59) 52 53 54 56 57 58 59 60 61 62 64 70 71 72 73 74 75 76 77 78
+    79
+'<' (60) 32
+'=' (61) 43 57 58 62
+'>' (62) 33
+'[' (91) 47 48 49 58 59 60 61 62
+']' (93) 47 48 49 58 59 60 61 62
+'{' (123) 17 55
+'}' (125) 17 55
+error (256) 54
+IDENTIFIER (258) 7 8 9 10 11 12 13 14 15 16 22 23 24 25 26 45 46 47
+    48 49 56 57 58 59 60 61 62
+STRING (259) 20 58 62
+INTEGER (260) 18 59 60 61
+CHAR (261) 19
+FUNC (262) 7 8 9 10 11
+VAR (263) 56 57 58 59 60 61
+CFUNC (264) 12 13 14 15 16
+PRINT (265) 72
+PRINTLN (266) 73
+GET (267) 74
+GETCHAR (268) 75
+GETLINE (269) 76
+FOR (270) 64
+WHILE (271) 66
+IF (272) 51
+RET (273) 70 71
+BREAK (274) 78
+CONT (275) 77
+EXIT (276) 79
+ETC (277) 62
+IFX (278)
+ELSE (279) 69
+VARDECLARE (280)
+OR (281) 42
+AND (282) 41
+NE (283) 35
+EQ (284) 34
+GE (285) 36
+LE (286) 37
+NEG (287)
+POS (288)
+
+
+Nonterminals, with rules where they appear
+
+$accept (53)
+    左： 0
+routines (54)
+    左： 1 2, 右： 0 2
+routine (55)
+    左： 3 4, 右： 2
+stmts (56)
+    左： 5 6, 右： 6 17 55
+function_header (57)
+    左： 7 8 9 10 11 12 13 14 15 16, 右： 17
+function (58)
+    左： 17, 右： 3
+expr (59)
+    左： 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
+    37 38 39 40 41 42 43 44 45, 右： 23 24 25 26 27 28 29 30 31 32
+    33 34 35 36 37 38 39 40 41 42 43 44 47 48 49 50 51 53 57 62 64
+    66 70 72 73
+variable (60)
+    左： 46 47 48 49 50, 右： 21 43 74 75 76
+if_prefix (61)
+    左： 51, 右： 67 69
+stmt (62)
+    左： 52 53 54 55 56 57 58 59 60 61 62 64 66 67 69 70 71 72 73
+    74 75 76 77 78 79, 右： 4 6 64 66 67 69
+@1 (63)
+    左： 63, 右： 64
+$@2 (64)
+    左： 65, 右： 66
+@3 (65)
+    左： 68, 右： 69
+
+
+State 0
+
+    0 $accept: . routines $end
+
+    $default  reduce using rule 1 (routines)
+
+    routines  转到状态 1
+
+
+State 1
+
+    0 $accept: routines . $end
+    2 routines: routines . routine
+
+    $end        shift, and go to state 2
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    FUNC        shift, and go to state 8
+    VAR         shift, and go to state 9
+    CFUNC       shift, and go to state 10
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    ';'         shift, and go to state 30
+
+    routine          转到状态 31
+    function_header  转到状态 32
+    function         转到状态 33
+    expr             转到状态 34
+    variable         转到状态 35
+    if_prefix        转到状态 36
+    stmt             转到状态 37
+
+
+State 2
+
+    0 $accept: routines $end .
+
+    $default  接受
+
+
+State 3
+
+   54 stmt: error . ';'
+
+    ';'  shift, and go to state 38
+
+
+State 4
+
+   22 expr: IDENTIFIER . '(' ')'
+   23     | IDENTIFIER . '(' expr ')'
+   24     | IDENTIFIER . '(' expr ',' expr ')'
+   25     | IDENTIFIER . '(' expr ',' expr ',' expr ')'
+   26     | IDENTIFIER . '(' expr ',' expr ',' expr ',' expr ')'
+   46 variable: IDENTIFIER .
+   47         | IDENTIFIER . '[' expr ']'
+   48         | IDENTIFIER . '[' expr ']' '[' expr ']'
+   49         | IDENTIFIER . '[' expr ']' '[' expr ']' '[' expr ']'
+   62 stmt: IDENTIFIER . '[' expr ETC ']' '=' STRING ';'
+
+    '('  shift, and go to state 39
+    '['  shift, and go to state 40
+
+    $default  reduce using rule 46 (variable)
+
+
+State 5
+
+   20 expr: STRING .
+
+    $default  reduce using rule 20 (expr)
+
+
+State 6
+
+   18 expr: INTEGER .
+
+    $default  reduce using rule 18 (expr)
+
+
+State 7
+
+   19 expr: CHAR .
+
+    $default  reduce using rule 19 (expr)
+
+
+State 8
+
+    7 function_header: FUNC . IDENTIFIER '(' ')'
+    8                | FUNC . IDENTIFIER '(' IDENTIFIER ')'
+    9                | FUNC . IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ')'
+   10                | FUNC . IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   11                | FUNC . IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 41
+
+
+State 9
+
+   56 stmt: VAR . IDENTIFIER ';'
+   57     | VAR . IDENTIFIER '=' expr ';'
+   58     | VAR . IDENTIFIER '[' ']' '=' STRING ';'
+   59     | VAR . IDENTIFIER '[' INTEGER ']' ';'
+   60     | VAR . IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' ';'
+   61     | VAR . IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' '[' INTEGER ']' ';'
+
+    IDENTIFIER  shift, and go to state 42
+
+
+State 10
+
+   12 function_header: CFUNC . IDENTIFIER '(' ')'
+   13                | CFUNC . IDENTIFIER '(' IDENTIFIER ')'
+   14                | CFUNC . IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ')'
+   15                | CFUNC . IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   16                | CFUNC . IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 43
+
+
+State 11
+
+   72 stmt: PRINT . expr ';'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 45
+    variable  转到状态 35
+
+
+State 12
+
+   73 stmt: PRINTLN . expr ';'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 46
+    variable  转到状态 35
+
+
+State 13
+
+   74 stmt: GET . variable ';'
+
+    IDENTIFIER  shift, and go to state 47
+    '$'         shift, and go to state 27
+
+    variable  转到状态 48
+
+
+State 14
+
+   75 stmt: GETCHAR . variable ';'
+
+    IDENTIFIER  shift, and go to state 47
+    '$'         shift, and go to state 27
+
+    variable  转到状态 49
+
+
+State 15
+
+   76 stmt: GETLINE . variable ';'
+
+    IDENTIFIER  shift, and go to state 47
+    '$'         shift, and go to state 27
+
+    variable  转到状态 50
+
+
+State 16
+
+   64 stmt: FOR . '(' expr ';' expr ';' expr ')' @1 stmt
+
+    '('  shift, and go to state 51
+
+
+State 17
+
+   66 stmt: WHILE . '(' expr ')' $@2 stmt
+
+    '('  shift, and go to state 52
+
+
+State 18
+
+   51 if_prefix: IF . '(' expr ')'
+
+    '('  shift, and go to state 53
+
+
+State 19
+
+   70 stmt: RET . expr ';'
+   71     | RET . ';'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    ';'         shift, and go to state 54
+
+    expr      转到状态 55
+    variable  转到状态 35
+
+
+State 20
+
+   78 stmt: BREAK . ';'
+
+    ';'  shift, and go to state 56
+
+
+State 21
+
+   77 stmt: CONT . ';'
+
+    ';'  shift, and go to state 57
+
+
+State 22
+
+   79 stmt: EXIT . ';'
+
+    ';'  shift, and go to state 58
+
+
+State 23
+
+   39 expr: '+' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 59
+    variable  转到状态 35
+
+
+State 24
+
+   40 expr: '-' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 60
+    variable  转到状态 35
+
+
+State 25
+
+   38 expr: '!' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 61
+    variable  转到状态 35
+
+
+State 26
+
+   45 expr: '&' . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 62
+
+
+State 27
+
+   50 variable: '$' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 63
+    variable  转到状态 35
+
+
+State 28
+
+   44 expr: '(' . expr ')'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 64
+    variable  转到状态 35
+
+
+State 29
+
+   55 stmt: '{' . stmts '}'
+
+    $default  reduce using rule 5 (stmts)
+
+    stmts  转到状态 65
+
+
+State 30
+
+   52 stmt: ';' .
+
+    $default  reduce using rule 52 (stmt)
+
+
+State 31
+
+    2 routines: routines routine .
+
+    $default  reduce using rule 2 (routines)
+
+
+State 32
+
+   17 function: function_header . '{' stmts '}'
+
+    '{'  shift, and go to state 66
+
+
+State 33
+
+    3 routine: function .
+
+    $default  reduce using rule 3 (routine)
+
+
+State 34
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   53 stmt: expr . ';'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 80
+
+
+State 35
+
+   21 expr: variable .
+   43     | variable . '=' expr
+
+    '='  shift, and go to state 81
+
+    $default  reduce using rule 21 (expr)
+
+
+State 36
+
+   67 stmt: if_prefix . stmt
+   69     | if_prefix . stmt ELSE @3 stmt
+
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    VAR         shift, and go to state 9
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    ';'         shift, and go to state 30
+
+    expr       转到状态 34
+    variable   转到状态 35
+    if_prefix  转到状态 36
+    stmt       转到状态 82
+
+
+State 37
+
+    4 routine: stmt .
+
+    $default  reduce using rule 4 (routine)
+
+
+State 38
+
+   54 stmt: error ';' .
+
+    $default  reduce using rule 54 (stmt)
+
+
+State 39
+
+   22 expr: IDENTIFIER '(' . ')'
+   23     | IDENTIFIER '(' . expr ')'
+   24     | IDENTIFIER '(' . expr ',' expr ')'
+   25     | IDENTIFIER '(' . expr ',' expr ',' expr ')'
+   26     | IDENTIFIER '(' . expr ',' expr ',' expr ',' expr ')'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    ')'         shift, and go to state 83
+
+    expr      转到状态 84
+    variable  转到状态 35
+
+
+State 40
+
+   47 variable: IDENTIFIER '[' . expr ']'
+   48         | IDENTIFIER '[' . expr ']' '[' expr ']'
+   49         | IDENTIFIER '[' . expr ']' '[' expr ']' '[' expr ']'
+   62 stmt: IDENTIFIER '[' . expr ETC ']' '=' STRING ';'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 85
+    variable  转到状态 35
+
+
+State 41
+
+    7 function_header: FUNC IDENTIFIER . '(' ')'
+    8                | FUNC IDENTIFIER . '(' IDENTIFIER ')'
+    9                | FUNC IDENTIFIER . '(' IDENTIFIER ',' IDENTIFIER ')'
+   10                | FUNC IDENTIFIER . '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   11                | FUNC IDENTIFIER . '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    '('  shift, and go to state 86
+
+
+State 42
+
+   56 stmt: VAR IDENTIFIER . ';'
+   57     | VAR IDENTIFIER . '=' expr ';'
+   58     | VAR IDENTIFIER . '[' ']' '=' STRING ';'
+   59     | VAR IDENTIFIER . '[' INTEGER ']' ';'
+   60     | VAR IDENTIFIER . '[' INTEGER ']' '[' INTEGER ']' ';'
+   61     | VAR IDENTIFIER . '[' INTEGER ']' '[' INTEGER ']' '[' INTEGER ']' ';'
+
+    '='  shift, and go to state 87
+    '['  shift, and go to state 88
+    ';'  shift, and go to state 89
+
+
+State 43
+
+   12 function_header: CFUNC IDENTIFIER . '(' ')'
+   13                | CFUNC IDENTIFIER . '(' IDENTIFIER ')'
+   14                | CFUNC IDENTIFIER . '(' IDENTIFIER ',' IDENTIFIER ')'
+   15                | CFUNC IDENTIFIER . '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER . '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    '('  shift, and go to state 90
+
+
+State 44
+
+   22 expr: IDENTIFIER . '(' ')'
+   23     | IDENTIFIER . '(' expr ')'
+   24     | IDENTIFIER . '(' expr ',' expr ')'
+   25     | IDENTIFIER . '(' expr ',' expr ',' expr ')'
+   26     | IDENTIFIER . '(' expr ',' expr ',' expr ',' expr ')'
+   46 variable: IDENTIFIER .
+   47         | IDENTIFIER . '[' expr ']'
+   48         | IDENTIFIER . '[' expr ']' '[' expr ']'
+   49         | IDENTIFIER . '[' expr ']' '[' expr ']' '[' expr ']'
+
+    '('  shift, and go to state 39
+    '['  shift, and go to state 91
+
+    $default  reduce using rule 46 (variable)
+
+
+State 45
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   72 stmt: PRINT expr . ';'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 92
+
+
+State 46
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   73 stmt: PRINTLN expr . ';'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 93
+
+
+State 47
+
+   46 variable: IDENTIFIER .
+   47         | IDENTIFIER . '[' expr ']'
+   48         | IDENTIFIER . '[' expr ']' '[' expr ']'
+   49         | IDENTIFIER . '[' expr ']' '[' expr ']' '[' expr ']'
+
+    '['  shift, and go to state 91
+
+    $default  reduce using rule 46 (variable)
+
+
+State 48
+
+   74 stmt: GET variable . ';'
+
+    ';'  shift, and go to state 94
+
+
+State 49
+
+   75 stmt: GETCHAR variable . ';'
+
+    ';'  shift, and go to state 95
+
+
+State 50
+
+   76 stmt: GETLINE variable . ';'
+
+    ';'  shift, and go to state 96
+
+
+State 51
+
+   64 stmt: FOR '(' . expr ';' expr ';' expr ')' @1 stmt
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 97
+    variable  转到状态 35
+
+
+State 52
+
+   66 stmt: WHILE '(' . expr ')' $@2 stmt
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 98
+    variable  转到状态 35
+
+
+State 53
+
+   51 if_prefix: IF '(' . expr ')'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 99
+    variable  转到状态 35
+
+
+State 54
+
+   71 stmt: RET ';' .
+
+    $default  reduce using rule 71 (stmt)
+
+
+State 55
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   70 stmt: RET expr . ';'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 100
+
+
+State 56
+
+   78 stmt: BREAK ';' .
+
+    $default  reduce using rule 78 (stmt)
+
+
+State 57
+
+   77 stmt: CONT ';' .
+
+    $default  reduce using rule 77 (stmt)
+
+
+State 58
+
+   79 stmt: EXIT ';' .
+
+    $default  reduce using rule 79 (stmt)
+
+
+State 59
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   39     | '+' expr .
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    $default  reduce using rule 39 (expr)
+
+
+State 60
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   40     | '-' expr .
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    $default  reduce using rule 40 (expr)
+
+
+State 61
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   38     | '!' expr .
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    $default  reduce using rule 38 (expr)
+
+
+State 62
+
+   45 expr: '&' IDENTIFIER .
+
+    $default  reduce using rule 45 (expr)
+
+
+State 63
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   50 variable: '$' expr .
+
+    $default  reduce using rule 50 (variable)
+
+
+State 64
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   44     | '(' expr . ')'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 101
+
+
+State 65
+
+    6 stmts: stmts . stmt
+   55 stmt: '{' stmts . '}'
+
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    VAR         shift, and go to state 9
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    '}'         shift, and go to state 102
+    ';'         shift, and go to state 30
+
+    expr       转到状态 34
+    variable   转到状态 35
+    if_prefix  转到状态 36
+    stmt       转到状态 103
+
+
+State 66
+
+   17 function: function_header '{' . stmts '}'
+
+    $default  reduce using rule 5 (stmts)
+
+    stmts  转到状态 104
+
+
+State 67
+
+   42 expr: expr OR . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 105
+    variable  转到状态 35
+
+
+State 68
+
+   41 expr: expr AND . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 106
+    variable  转到状态 35
+
+
+State 69
+
+   35 expr: expr NE . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 107
+    variable  转到状态 35
+
+
+State 70
+
+   34 expr: expr EQ . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 108
+    variable  转到状态 35
+
+
+State 71
+
+   36 expr: expr GE . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 109
+    variable  转到状态 35
+
+
+State 72
+
+   37 expr: expr LE . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 110
+    variable  转到状态 35
+
+
+State 73
+
+   32 expr: expr '<' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 111
+    variable  转到状态 35
+
+
+State 74
+
+   33 expr: expr '>' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 112
+    variable  转到状态 35
+
+
+State 75
+
+   27 expr: expr '+' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 113
+    variable  转到状态 35
+
+
+State 76
+
+   28 expr: expr '-' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 114
+    variable  转到状态 35
+
+
+State 77
+
+   29 expr: expr '*' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 115
+    variable  转到状态 35
+
+
+State 78
+
+   30 expr: expr '/' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 116
+    variable  转到状态 35
+
+
+State 79
+
+   31 expr: expr '%' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 117
+    variable  转到状态 35
+
+
+State 80
+
+   53 stmt: expr ';' .
+
+    $default  reduce using rule 53 (stmt)
+
+
+State 81
+
+   43 expr: variable '=' . expr
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 118
+    variable  转到状态 35
+
+
+State 82
+
+   67 stmt: if_prefix stmt .
+   69     | if_prefix stmt . ELSE @3 stmt
+
+    ELSE  shift, and go to state 119
+
+    $default  reduce using rule 67 (stmt)
+
+
+State 83
+
+   22 expr: IDENTIFIER '(' ')' .
+
+    $default  reduce using rule 22 (expr)
+
+
+State 84
+
+   23 expr: IDENTIFIER '(' expr . ')'
+   24     | IDENTIFIER '(' expr . ',' expr ')'
+   25     | IDENTIFIER '(' expr . ',' expr ',' expr ')'
+   26     | IDENTIFIER '(' expr . ',' expr ',' expr ',' expr ')'
+   27     | expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    ','  shift, and go to state 120
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 121
+
+
+State 85
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   47 variable: IDENTIFIER '[' expr . ']'
+   48         | IDENTIFIER '[' expr . ']' '[' expr ']'
+   49         | IDENTIFIER '[' expr . ']' '[' expr ']' '[' expr ']'
+   62 stmt: IDENTIFIER '[' expr . ETC ']' '=' STRING ';'
+
+    ETC  shift, and go to state 122
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ']'  shift, and go to state 123
+
+
+State 86
+
+    7 function_header: FUNC IDENTIFIER '(' . ')'
+    8                | FUNC IDENTIFIER '(' . IDENTIFIER ')'
+    9                | FUNC IDENTIFIER '(' . IDENTIFIER ',' IDENTIFIER ')'
+   10                | FUNC IDENTIFIER '(' . IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   11                | FUNC IDENTIFIER '(' . IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 124
+    ')'         shift, and go to state 125
+
+
+State 87
+
+   57 stmt: VAR IDENTIFIER '=' . expr ';'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 126
+    variable  转到状态 35
+
+
+State 88
+
+   58 stmt: VAR IDENTIFIER '[' . ']' '=' STRING ';'
+   59     | VAR IDENTIFIER '[' . INTEGER ']' ';'
+   60     | VAR IDENTIFIER '[' . INTEGER ']' '[' INTEGER ']' ';'
+   61     | VAR IDENTIFIER '[' . INTEGER ']' '[' INTEGER ']' '[' INTEGER ']' ';'
+
+    INTEGER  shift, and go to state 127
+    ']'      shift, and go to state 128
+
+
+State 89
+
+   56 stmt: VAR IDENTIFIER ';' .
+
+    $default  reduce using rule 56 (stmt)
+
+
+State 90
+
+   12 function_header: CFUNC IDENTIFIER '(' . ')'
+   13                | CFUNC IDENTIFIER '(' . IDENTIFIER ')'
+   14                | CFUNC IDENTIFIER '(' . IDENTIFIER ',' IDENTIFIER ')'
+   15                | CFUNC IDENTIFIER '(' . IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER '(' . IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 129
+    ')'         shift, and go to state 130
+
+
+State 91
+
+   47 variable: IDENTIFIER '[' . expr ']'
+   48         | IDENTIFIER '[' . expr ']' '[' expr ']'
+   49         | IDENTIFIER '[' . expr ']' '[' expr ']' '[' expr ']'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 131
+    variable  转到状态 35
+
+
+State 92
+
+   72 stmt: PRINT expr ';' .
+
+    $default  reduce using rule 72 (stmt)
+
+
+State 93
+
+   73 stmt: PRINTLN expr ';' .
+
+    $default  reduce using rule 73 (stmt)
+
+
+State 94
+
+   74 stmt: GET variable ';' .
+
+    $default  reduce using rule 74 (stmt)
+
+
+State 95
+
+   75 stmt: GETCHAR variable ';' .
+
+    $default  reduce using rule 75 (stmt)
+
+
+State 96
+
+   76 stmt: GETLINE variable ';' .
+
+    $default  reduce using rule 76 (stmt)
+
+
+State 97
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   64 stmt: FOR '(' expr . ';' expr ';' expr ')' @1 stmt
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 132
+
+
+State 98
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   66 stmt: WHILE '(' expr . ')' $@2 stmt
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 133
+
+
+State 99
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   51 if_prefix: IF '(' expr . ')'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 134
+
+
+State 100
+
+   70 stmt: RET expr ';' .
+
+    $default  reduce using rule 70 (stmt)
+
+
+State 101
+
+   44 expr: '(' expr ')' .
+
+    $default  reduce using rule 44 (expr)
+
+
+State 102
+
+   55 stmt: '{' stmts '}' .
+
+    $default  reduce using rule 55 (stmt)
+
+
+State 103
+
+    6 stmts: stmts stmt .
+
+    $default  reduce using rule 6 (stmts)
+
+
+State 104
+
+    6 stmts: stmts . stmt
+   17 function: function_header '{' stmts . '}'
+
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    VAR         shift, and go to state 9
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    '}'         shift, and go to state 135
+    ';'         shift, and go to state 30
+
+    expr       转到状态 34
+    variable   转到状态 35
+    if_prefix  转到状态 36
+    stmt       转到状态 103
+
+
+State 105
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   42     | expr OR expr .
+
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 42 (expr)
+
+
+State 106
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   41     | expr AND expr .
+   42     | expr . OR expr
+
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 41 (expr)
+
+
+State 107
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   35     | expr NE expr .
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 35 (expr)
+
+
+State 108
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   34     | expr EQ expr .
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 34 (expr)
+
+
+State 109
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   36     | expr GE expr .
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 36 (expr)
+
+
+State 110
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   37     | expr LE expr .
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 37 (expr)
+
+
+State 111
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   32     | expr '<' expr .
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 32 (expr)
+
+
+State 112
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   33     | expr '>' expr .
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 33 (expr)
+
+
+State 113
+
+   27 expr: expr . '+' expr
+   27     | expr '+' expr .
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 27 (expr)
+
+
+State 114
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   28     | expr '-' expr .
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 28 (expr)
+
+
+State 115
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   29     | expr '*' expr .
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    $default  reduce using rule 29 (expr)
+
+
+State 116
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   30     | expr '/' expr .
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    $default  reduce using rule 30 (expr)
+
+
+State 117
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   31     | expr '%' expr .
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    $default  reduce using rule 31 (expr)
+
+
+State 118
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   43     | variable '=' expr .
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+
+    $default  reduce using rule 43 (expr)
+
+
+State 119
+
+   69 stmt: if_prefix stmt ELSE . @3 stmt
+
+    $default  reduce using rule 68 (@3)
+
+    @3  转到状态 136
+
+
+State 120
+
+   24 expr: IDENTIFIER '(' expr ',' . expr ')'
+   25     | IDENTIFIER '(' expr ',' . expr ',' expr ')'
+   26     | IDENTIFIER '(' expr ',' . expr ',' expr ',' expr ')'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 137
+    variable  转到状态 35
+
+
+State 121
+
+   23 expr: IDENTIFIER '(' expr ')' .
+
+    $default  reduce using rule 23 (expr)
+
+
+State 122
+
+   62 stmt: IDENTIFIER '[' expr ETC . ']' '=' STRING ';'
+
+    ']'  shift, and go to state 138
+
+
+State 123
+
+   47 variable: IDENTIFIER '[' expr ']' .
+   48         | IDENTIFIER '[' expr ']' . '[' expr ']'
+   49         | IDENTIFIER '[' expr ']' . '[' expr ']' '[' expr ']'
+
+    '['  shift, and go to state 139
+
+    $default  reduce using rule 47 (variable)
+
+
+State 124
+
+    8 function_header: FUNC IDENTIFIER '(' IDENTIFIER . ')'
+    9                | FUNC IDENTIFIER '(' IDENTIFIER . ',' IDENTIFIER ')'
+   10                | FUNC IDENTIFIER '(' IDENTIFIER . ',' IDENTIFIER ',' IDENTIFIER ')'
+   11                | FUNC IDENTIFIER '(' IDENTIFIER . ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    ','  shift, and go to state 140
+    ')'  shift, and go to state 141
+
+
+State 125
+
+    7 function_header: FUNC IDENTIFIER '(' ')' .
+
+    $default  reduce using rule 7 (function_header)
+
+
+State 126
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   57 stmt: VAR IDENTIFIER '=' expr . ';'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 142
+
+
+State 127
+
+   59 stmt: VAR IDENTIFIER '[' INTEGER . ']' ';'
+   60     | VAR IDENTIFIER '[' INTEGER . ']' '[' INTEGER ']' ';'
+   61     | VAR IDENTIFIER '[' INTEGER . ']' '[' INTEGER ']' '[' INTEGER ']' ';'
+
+    ']'  shift, and go to state 143
+
+
+State 128
+
+   58 stmt: VAR IDENTIFIER '[' ']' . '=' STRING ';'
+
+    '='  shift, and go to state 144
+
+
+State 129
+
+   13 function_header: CFUNC IDENTIFIER '(' IDENTIFIER . ')'
+   14                | CFUNC IDENTIFIER '(' IDENTIFIER . ',' IDENTIFIER ')'
+   15                | CFUNC IDENTIFIER '(' IDENTIFIER . ',' IDENTIFIER ',' IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER '(' IDENTIFIER . ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    ','  shift, and go to state 145
+    ')'  shift, and go to state 146
+
+
+State 130
+
+   12 function_header: CFUNC IDENTIFIER '(' ')' .
+
+    $default  reduce using rule 12 (function_header)
+
+
+State 131
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   47 variable: IDENTIFIER '[' expr . ']'
+   48         | IDENTIFIER '[' expr . ']' '[' expr ']'
+   49         | IDENTIFIER '[' expr . ']' '[' expr ']' '[' expr ']'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ']'  shift, and go to state 123
+
+
+State 132
+
+   64 stmt: FOR '(' expr ';' . expr ';' expr ')' @1 stmt
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 147
+    variable  转到状态 35
+
+
+State 133
+
+   66 stmt: WHILE '(' expr ')' . $@2 stmt
+
+    $default  reduce using rule 65 ($@2)
+
+    $@2  转到状态 148
+
+
+State 134
+
+   51 if_prefix: IF '(' expr ')' .
+
+    $default  reduce using rule 51 (if_prefix)
+
+
+State 135
+
+   17 function: function_header '{' stmts '}' .
+
+    $default  reduce using rule 17 (function)
+
+
+State 136
+
+   69 stmt: if_prefix stmt ELSE @3 . stmt
+
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    VAR         shift, and go to state 9
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    ';'         shift, and go to state 30
+
+    expr       转到状态 34
+    variable   转到状态 35
+    if_prefix  转到状态 36
+    stmt       转到状态 149
+
+
+State 137
+
+   24 expr: IDENTIFIER '(' expr ',' expr . ')'
+   25     | IDENTIFIER '(' expr ',' expr . ',' expr ')'
+   26     | IDENTIFIER '(' expr ',' expr . ',' expr ',' expr ')'
+   27     | expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    ','  shift, and go to state 150
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 151
+
+
+State 138
+
+   62 stmt: IDENTIFIER '[' expr ETC ']' . '=' STRING ';'
+
+    '='  shift, and go to state 152
+
+
+State 139
+
+   48 variable: IDENTIFIER '[' expr ']' '[' . expr ']'
+   49         | IDENTIFIER '[' expr ']' '[' . expr ']' '[' expr ']'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 153
+    variable  转到状态 35
+
+
+State 140
+
+    9 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' . IDENTIFIER ')'
+   10                | FUNC IDENTIFIER '(' IDENTIFIER ',' . IDENTIFIER ',' IDENTIFIER ')'
+   11                | FUNC IDENTIFIER '(' IDENTIFIER ',' . IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 154
+
+
+State 141
+
+    8 function_header: FUNC IDENTIFIER '(' IDENTIFIER ')' .
+
+    $default  reduce using rule 8 (function_header)
+
+
+State 142
+
+   57 stmt: VAR IDENTIFIER '=' expr ';' .
+
+    $default  reduce using rule 57 (stmt)
+
+
+State 143
+
+   59 stmt: VAR IDENTIFIER '[' INTEGER ']' . ';'
+   60     | VAR IDENTIFIER '[' INTEGER ']' . '[' INTEGER ']' ';'
+   61     | VAR IDENTIFIER '[' INTEGER ']' . '[' INTEGER ']' '[' INTEGER ']' ';'
+
+    '['  shift, and go to state 155
+    ';'  shift, and go to state 156
+
+
+State 144
+
+   58 stmt: VAR IDENTIFIER '[' ']' '=' . STRING ';'
+
+    STRING  shift, and go to state 157
+
+
+State 145
+
+   14 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' . IDENTIFIER ')'
+   15                | CFUNC IDENTIFIER '(' IDENTIFIER ',' . IDENTIFIER ',' IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER '(' IDENTIFIER ',' . IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 158
+
+
+State 146
+
+   13 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ')' .
+
+    $default  reduce using rule 13 (function_header)
+
+
+State 147
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   64 stmt: FOR '(' expr ';' expr . ';' expr ')' @1 stmt
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ';'  shift, and go to state 159
+
+
+State 148
+
+   66 stmt: WHILE '(' expr ')' $@2 . stmt
+
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    VAR         shift, and go to state 9
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    ';'         shift, and go to state 30
+
+    expr       转到状态 34
+    variable   转到状态 35
+    if_prefix  转到状态 36
+    stmt       转到状态 160
+
+
+State 149
+
+   69 stmt: if_prefix stmt ELSE @3 stmt .
+
+    $default  reduce using rule 69 (stmt)
+
+
+State 150
+
+   25 expr: IDENTIFIER '(' expr ',' expr ',' . expr ')'
+   26     | IDENTIFIER '(' expr ',' expr ',' . expr ',' expr ')'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 161
+    variable  转到状态 35
+
+
+State 151
+
+   24 expr: IDENTIFIER '(' expr ',' expr ')' .
+
+    $default  reduce using rule 24 (expr)
+
+
+State 152
+
+   62 stmt: IDENTIFIER '[' expr ETC ']' '=' . STRING ';'
+
+    STRING  shift, and go to state 162
+
+
+State 153
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   48 variable: IDENTIFIER '[' expr ']' '[' expr . ']'
+   49         | IDENTIFIER '[' expr ']' '[' expr . ']' '[' expr ']'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ']'  shift, and go to state 163
+
+
+State 154
+
+    9 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER . ')'
+   10                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER . ',' IDENTIFIER ')'
+   11                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER . ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    ','  shift, and go to state 164
+    ')'  shift, and go to state 165
+
+
+State 155
+
+   60 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' . INTEGER ']' ';'
+   61     | VAR IDENTIFIER '[' INTEGER ']' '[' . INTEGER ']' '[' INTEGER ']' ';'
+
+    INTEGER  shift, and go to state 166
+
+
+State 156
+
+   59 stmt: VAR IDENTIFIER '[' INTEGER ']' ';' .
+
+    $default  reduce using rule 59 (stmt)
+
+
+State 157
+
+   58 stmt: VAR IDENTIFIER '[' ']' '=' STRING . ';'
+
+    ';'  shift, and go to state 167
+
+
+State 158
+
+   14 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER . ')'
+   15                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER . ',' IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER . ',' IDENTIFIER ',' IDENTIFIER ')'
+
+    ','  shift, and go to state 168
+    ')'  shift, and go to state 169
+
+
+State 159
+
+   64 stmt: FOR '(' expr ';' expr ';' . expr ')' @1 stmt
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 170
+    variable  转到状态 35
+
+
+State 160
+
+   66 stmt: WHILE '(' expr ')' $@2 stmt .
+
+    $default  reduce using rule 66 (stmt)
+
+
+State 161
+
+   25 expr: IDENTIFIER '(' expr ',' expr ',' expr . ')'
+   26     | IDENTIFIER '(' expr ',' expr ',' expr . ',' expr ')'
+   27     | expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    ','  shift, and go to state 171
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 172
+
+
+State 162
+
+   62 stmt: IDENTIFIER '[' expr ETC ']' '=' STRING . ';'
+
+    ';'  shift, and go to state 173
+
+
+State 163
+
+   48 variable: IDENTIFIER '[' expr ']' '[' expr ']' .
+   49         | IDENTIFIER '[' expr ']' '[' expr ']' . '[' expr ']'
+
+    '['  shift, and go to state 174
+
+    $default  reduce using rule 48 (variable)
+
+
+State 164
+
+   10 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' . IDENTIFIER ')'
+   11                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' . IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 175
+
+
+State 165
+
+    9 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ')' .
+
+    $default  reduce using rule 9 (function_header)
+
+
+State 166
+
+   60 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER . ']' ';'
+   61     | VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER . ']' '[' INTEGER ']' ';'
+
+    ']'  shift, and go to state 176
+
+
+State 167
+
+   58 stmt: VAR IDENTIFIER '[' ']' '=' STRING ';' .
+
+    $default  reduce using rule 58 (stmt)
+
+
+State 168
+
+   15 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' . IDENTIFIER ')'
+   16                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' . IDENTIFIER ',' IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 177
+
+
+State 169
+
+   14 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ')' .
+
+    $default  reduce using rule 14 (function_header)
+
+
+State 170
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   64 stmt: FOR '(' expr ';' expr ';' expr . ')' @1 stmt
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 178
+
+
+State 171
+
+   26 expr: IDENTIFIER '(' expr ',' expr ',' expr ',' . expr ')'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 179
+    variable  转到状态 35
+
+
+State 172
+
+   25 expr: IDENTIFIER '(' expr ',' expr ',' expr ')' .
+
+    $default  reduce using rule 25 (expr)
+
+
+State 173
+
+   62 stmt: IDENTIFIER '[' expr ETC ']' '=' STRING ';' .
+
+    $default  reduce using rule 62 (stmt)
+
+
+State 174
+
+   49 variable: IDENTIFIER '[' expr ']' '[' expr ']' '[' . expr ']'
+
+    IDENTIFIER  shift, and go to state 44
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+
+    expr      转到状态 180
+    variable  转到状态 35
+
+
+State 175
+
+   10 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER . ')'
+   11                | FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER . ',' IDENTIFIER ')'
+
+    ','  shift, and go to state 181
+    ')'  shift, and go to state 182
+
+
+State 176
+
+   60 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' . ';'
+   61     | VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' . '[' INTEGER ']' ';'
+
+    '['  shift, and go to state 183
+    ';'  shift, and go to state 184
+
+
+State 177
+
+   15 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER . ')'
+   16                | CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER . ',' IDENTIFIER ')'
+
+    ','  shift, and go to state 185
+    ')'  shift, and go to state 186
+
+
+State 178
+
+   64 stmt: FOR '(' expr ';' expr ';' expr ')' . @1 stmt
+
+    $default  reduce using rule 63 (@1)
+
+    @1  转到状态 187
+
+
+State 179
+
+   26 expr: IDENTIFIER '(' expr ',' expr ',' expr ',' expr . ')'
+   27     | expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ')'  shift, and go to state 188
+
+
+State 180
+
+   27 expr: expr . '+' expr
+   28     | expr . '-' expr
+   29     | expr . '*' expr
+   30     | expr . '/' expr
+   31     | expr . '%' expr
+   32     | expr . '<' expr
+   33     | expr . '>' expr
+   34     | expr . EQ expr
+   35     | expr . NE expr
+   36     | expr . GE expr
+   37     | expr . LE expr
+   41     | expr . AND expr
+   42     | expr . OR expr
+   49 variable: IDENTIFIER '[' expr ']' '[' expr ']' '[' expr . ']'
+
+    OR   shift, and go to state 67
+    AND  shift, and go to state 68
+    NE   shift, and go to state 69
+    EQ   shift, and go to state 70
+    GE   shift, and go to state 71
+    LE   shift, and go to state 72
+    '<'  shift, and go to state 73
+    '>'  shift, and go to state 74
+    '+'  shift, and go to state 75
+    '-'  shift, and go to state 76
+    '*'  shift, and go to state 77
+    '/'  shift, and go to state 78
+    '%'  shift, and go to state 79
+    ']'  shift, and go to state 189
+
+
+State 181
+
+   11 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' . IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 190
+
+
+State 182
+
+   10 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')' .
+
+    $default  reduce using rule 10 (function_header)
+
+
+State 183
+
+   61 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' '[' . INTEGER ']' ';'
+
+    INTEGER  shift, and go to state 191
+
+
+State 184
+
+   60 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' ';' .
+
+    $default  reduce using rule 60 (stmt)
+
+
+State 185
+
+   16 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' . IDENTIFIER ')'
+
+    IDENTIFIER  shift, and go to state 192
+
+
+State 186
+
+   15 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')' .
+
+    $default  reduce using rule 15 (function_header)
+
+
+State 187
+
+   64 stmt: FOR '(' expr ';' expr ';' expr ')' @1 . stmt
+
+    error       shift, and go to state 3
+    IDENTIFIER  shift, and go to state 4
+    STRING      shift, and go to state 5
+    INTEGER     shift, and go to state 6
+    CHAR        shift, and go to state 7
+    VAR         shift, and go to state 9
+    PRINT       shift, and go to state 11
+    PRINTLN     shift, and go to state 12
+    GET         shift, and go to state 13
+    GETCHAR     shift, and go to state 14
+    GETLINE     shift, and go to state 15
+    FOR         shift, and go to state 16
+    WHILE       shift, and go to state 17
+    IF          shift, and go to state 18
+    RET         shift, and go to state 19
+    BREAK       shift, and go to state 20
+    CONT        shift, and go to state 21
+    EXIT        shift, and go to state 22
+    '+'         shift, and go to state 23
+    '-'         shift, and go to state 24
+    '!'         shift, and go to state 25
+    '&'         shift, and go to state 26
+    '$'         shift, and go to state 27
+    '('         shift, and go to state 28
+    '{'         shift, and go to state 29
+    ';'         shift, and go to state 30
+
+    expr       转到状态 34
+    variable   转到状态 35
+    if_prefix  转到状态 36
+    stmt       转到状态 193
+
+
+State 188
+
+   26 expr: IDENTIFIER '(' expr ',' expr ',' expr ',' expr ')' .
+
+    $default  reduce using rule 26 (expr)
+
+
+State 189
+
+   49 variable: IDENTIFIER '[' expr ']' '[' expr ']' '[' expr ']' .
+
+    $default  reduce using rule 49 (variable)
+
+
+State 190
+
+   11 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER . ')'
+
+    ')'  shift, and go to state 194
+
+
+State 191
+
+   61 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' '[' INTEGER . ']' ';'
+
+    ']'  shift, and go to state 195
+
+
+State 192
+
+   16 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER . ')'
+
+    ')'  shift, and go to state 196
+
+
+State 193
+
+   64 stmt: FOR '(' expr ';' expr ';' expr ')' @1 stmt .
+
+    $default  reduce using rule 64 (stmt)
+
+
+State 194
+
+   11 function_header: FUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')' .
+
+    $default  reduce using rule 11 (function_header)
+
+
+State 195
+
+   61 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' '[' INTEGER ']' . ';'
+
+    ';'  shift, and go to state 197
+
+
+State 196
+
+   16 function_header: CFUNC IDENTIFIER '(' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ',' IDENTIFIER ')' .
+
+    $default  reduce using rule 16 (function_header)
+
+
+State 197
+
+   61 stmt: VAR IDENTIFIER '[' INTEGER ']' '[' INTEGER ']' '[' INTEGER ']' ';' .
+
+    $default  reduce using rule 61 (stmt)

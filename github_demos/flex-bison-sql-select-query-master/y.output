@@ -1,0 +1,487 @@
+Terminals unused in grammar
+
+   LEFT_BRACKET
+   RIGHT_BRACKET
+   DISTINCTALL
+
+
+语法
+
+    0 $accept: select_statement $end
+
+    1 select_statement: SELECT fields_list from_clause END_QUERY
+    2                 | SELECT fields_list from_clause where_clause END_QUERY
+    3                 | error fields_list from_clause where_clause END_QUERY
+
+    4 where_clause: WHERE condition
+    5             | error condition
+
+    6 from_clause: FROM list
+    7            | FROM error
+
+    8 condition: condition1
+    9          | condition1 OR condition
+   10          | condition1 AND condition
+
+   11 fields_list: ALL
+   12            | list
+
+   13 list: IDENT
+   14     | list COMMA IDENT
+
+   15 condition1: condition2
+   16           | NOT condition2
+
+   17 condition2: IDENT COMPARISON value_field
+   18           | IDENT error value_field
+   19           | IDENT COMPARISON error
+   20           | error COMPARISON value_field
+   21           | error
+
+   22 value_field: STRING
+   23            | NUMBER
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 3 5 7 18 19 20 21
+STRING (258) 22
+NOT (259) 16
+LEFT_BRACKET (260)
+RIGHT_BRACKET (261)
+COMMA (262) 14
+COMPARISON (263) 17 19 20
+NUMBER (264) 23
+SELECT (265) 1 2
+DISTINCTALL (266)
+FROM (267) 6 7
+WHERE (268) 4
+IDENT (269) 13 14 17 18 19
+OR (270) 9
+AND (271) 10
+ALL (272) 11
+END_QUERY (273) 1 2 3
+
+
+Nonterminals, with rules where they appear
+
+$accept (19)
+    左： 0
+select_statement (20)
+    左： 1 2 3, 右： 0
+where_clause (21)
+    左： 4 5, 右： 2 3
+from_clause (22)
+    左： 6 7, 右： 1 2 3
+condition (23)
+    左： 8 9 10, 右： 4 5 9 10
+fields_list (24)
+    左： 11 12, 右： 1 2 3
+list (25)
+    左： 13 14, 右： 6 12 14
+condition1 (26)
+    左： 15 16, 右： 8 9 10
+condition2 (27)
+    左： 17 18 19 20 21, 右： 15 16
+value_field (28)
+    左： 22 23, 右： 17 18 20
+
+
+State 0
+
+    0 $accept: . select_statement $end
+
+    error   shift, and go to state 1
+    SELECT  shift, and go to state 2
+
+    select_statement  转到状态 3
+
+
+State 1
+
+    3 select_statement: error . fields_list from_clause where_clause END_QUERY
+
+    IDENT  shift, and go to state 4
+    ALL    shift, and go to state 5
+
+    fields_list  转到状态 6
+    list         转到状态 7
+
+
+State 2
+
+    1 select_statement: SELECT . fields_list from_clause END_QUERY
+    2                 | SELECT . fields_list from_clause where_clause END_QUERY
+
+    IDENT  shift, and go to state 4
+    ALL    shift, and go to state 5
+
+    fields_list  转到状态 8
+    list         转到状态 7
+
+
+State 3
+
+    0 $accept: select_statement . $end
+
+    $end  shift, and go to state 9
+
+
+State 4
+
+   13 list: IDENT .
+
+    $default  reduce using rule 13 (list)
+
+
+State 5
+
+   11 fields_list: ALL .
+
+    $default  reduce using rule 11 (fields_list)
+
+
+State 6
+
+    3 select_statement: error fields_list . from_clause where_clause END_QUERY
+
+    FROM  shift, and go to state 10
+
+    from_clause  转到状态 11
+
+
+State 7
+
+   12 fields_list: list .
+   14 list: list . COMMA IDENT
+
+    COMMA  shift, and go to state 12
+
+    $default  reduce using rule 12 (fields_list)
+
+
+State 8
+
+    1 select_statement: SELECT fields_list . from_clause END_QUERY
+    2                 | SELECT fields_list . from_clause where_clause END_QUERY
+
+    FROM  shift, and go to state 10
+
+    from_clause  转到状态 13
+
+
+State 9
+
+    0 $accept: select_statement $end .
+
+    $default  接受
+
+
+State 10
+
+    6 from_clause: FROM . list
+    7            | FROM . error
+
+    error  shift, and go to state 14
+    IDENT  shift, and go to state 4
+
+    list  转到状态 15
+
+
+State 11
+
+    3 select_statement: error fields_list from_clause . where_clause END_QUERY
+
+    error  shift, and go to state 16
+    WHERE  shift, and go to state 17
+
+    where_clause  转到状态 18
+
+
+State 12
+
+   14 list: list COMMA . IDENT
+
+    IDENT  shift, and go to state 19
+
+
+State 13
+
+    1 select_statement: SELECT fields_list from_clause . END_QUERY
+    2                 | SELECT fields_list from_clause . where_clause END_QUERY
+
+    error      shift, and go to state 16
+    WHERE      shift, and go to state 17
+    END_QUERY  shift, and go to state 20
+
+    where_clause  转到状态 21
+
+
+State 14
+
+    7 from_clause: FROM error .
+
+    $default  reduce using rule 7 (from_clause)
+
+
+State 15
+
+    6 from_clause: FROM list .
+   14 list: list . COMMA IDENT
+
+    COMMA  shift, and go to state 12
+
+    $default  reduce using rule 6 (from_clause)
+
+
+State 16
+
+    5 where_clause: error . condition
+
+    error  shift, and go to state 22
+    NOT    shift, and go to state 23
+    IDENT  shift, and go to state 24
+
+    condition   转到状态 25
+    condition1  转到状态 26
+    condition2  转到状态 27
+
+
+State 17
+
+    4 where_clause: WHERE . condition
+
+    error  shift, and go to state 22
+    NOT    shift, and go to state 23
+    IDENT  shift, and go to state 24
+
+    condition   转到状态 28
+    condition1  转到状态 26
+    condition2  转到状态 27
+
+
+State 18
+
+    3 select_statement: error fields_list from_clause where_clause . END_QUERY
+
+    END_QUERY  shift, and go to state 29
+
+
+State 19
+
+   14 list: list COMMA IDENT .
+
+    $default  reduce using rule 14 (list)
+
+
+State 20
+
+    1 select_statement: SELECT fields_list from_clause END_QUERY .
+
+    $default  reduce using rule 1 (select_statement)
+
+
+State 21
+
+    2 select_statement: SELECT fields_list from_clause where_clause . END_QUERY
+
+    END_QUERY  shift, and go to state 30
+
+
+State 22
+
+   20 condition2: error . COMPARISON value_field
+   21           | error .
+
+    COMPARISON  shift, and go to state 31
+
+    $default  reduce using rule 21 (condition2)
+
+
+State 23
+
+   16 condition1: NOT . condition2
+
+    error  shift, and go to state 22
+    IDENT  shift, and go to state 24
+
+    condition2  转到状态 32
+
+
+State 24
+
+   17 condition2: IDENT . COMPARISON value_field
+   18           | IDENT . error value_field
+   19           | IDENT . COMPARISON error
+
+    error       shift, and go to state 33
+    COMPARISON  shift, and go to state 34
+
+
+State 25
+
+    5 where_clause: error condition .
+
+    $default  reduce using rule 5 (where_clause)
+
+
+State 26
+
+    8 condition: condition1 .
+    9          | condition1 . OR condition
+   10          | condition1 . AND condition
+
+    OR   shift, and go to state 35
+    AND  shift, and go to state 36
+
+    $default  reduce using rule 8 (condition)
+
+
+State 27
+
+   15 condition1: condition2 .
+
+    $default  reduce using rule 15 (condition1)
+
+
+State 28
+
+    4 where_clause: WHERE condition .
+
+    $default  reduce using rule 4 (where_clause)
+
+
+State 29
+
+    3 select_statement: error fields_list from_clause where_clause END_QUERY .
+
+    $default  reduce using rule 3 (select_statement)
+
+
+State 30
+
+    2 select_statement: SELECT fields_list from_clause where_clause END_QUERY .
+
+    $default  reduce using rule 2 (select_statement)
+
+
+State 31
+
+   20 condition2: error COMPARISON . value_field
+
+    STRING  shift, and go to state 37
+    NUMBER  shift, and go to state 38
+
+    value_field  转到状态 39
+
+
+State 32
+
+   16 condition1: NOT condition2 .
+
+    $default  reduce using rule 16 (condition1)
+
+
+State 33
+
+   18 condition2: IDENT error . value_field
+
+    STRING  shift, and go to state 37
+    NUMBER  shift, and go to state 38
+
+    value_field  转到状态 40
+
+
+State 34
+
+   17 condition2: IDENT COMPARISON . value_field
+   19           | IDENT COMPARISON . error
+
+    error   shift, and go to state 41
+    STRING  shift, and go to state 37
+    NUMBER  shift, and go to state 38
+
+    value_field  转到状态 42
+
+
+State 35
+
+    9 condition: condition1 OR . condition
+
+    error  shift, and go to state 22
+    NOT    shift, and go to state 23
+    IDENT  shift, and go to state 24
+
+    condition   转到状态 43
+    condition1  转到状态 26
+    condition2  转到状态 27
+
+
+State 36
+
+   10 condition: condition1 AND . condition
+
+    error  shift, and go to state 22
+    NOT    shift, and go to state 23
+    IDENT  shift, and go to state 24
+
+    condition   转到状态 44
+    condition1  转到状态 26
+    condition2  转到状态 27
+
+
+State 37
+
+   22 value_field: STRING .
+
+    $default  reduce using rule 22 (value_field)
+
+
+State 38
+
+   23 value_field: NUMBER .
+
+    $default  reduce using rule 23 (value_field)
+
+
+State 39
+
+   20 condition2: error COMPARISON value_field .
+
+    $default  reduce using rule 20 (condition2)
+
+
+State 40
+
+   18 condition2: IDENT error value_field .
+
+    $default  reduce using rule 18 (condition2)
+
+
+State 41
+
+   19 condition2: IDENT COMPARISON error .
+
+    $default  reduce using rule 19 (condition2)
+
+
+State 42
+
+   17 condition2: IDENT COMPARISON value_field .
+
+    $default  reduce using rule 17 (condition2)
+
+
+State 43
+
+    9 condition: condition1 OR condition .
+
+    $default  reduce using rule 9 (condition)
+
+
+State 44
+
+   10 condition: condition1 AND condition .
+
+    $default  reduce using rule 10 (condition)

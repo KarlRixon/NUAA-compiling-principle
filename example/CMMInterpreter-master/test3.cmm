@@ -1,0 +1,23 @@
+/*	Test arrays
+*	Test casting
+*	Detect index out-of-bound
+*/
+real array[3];	
+array[0] = 1;	
+array[1] = 0.9876;	
+array[2] = -3.5;
+array[3] = 2.2;	// index out-of-upper-bound
+int index[1];
+index[-1] = 0;	// index out-of-lower-bound
+index[0] = 0.7;	// cast to int before assign
+while(index[0] < 3)
+{	write(array[index[0]]);
+	index[0] = index[0] + 1;
+}
+
+/*output:
+// Two errors.
+1.0000
+0.9876
+-3.5000
+*/

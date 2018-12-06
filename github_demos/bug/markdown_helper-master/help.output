@@ -1,0 +1,390 @@
+语法
+
+    0 $accept: block $end
+
+    1 block: block_list
+
+    2 block_list: block_item
+    3           | block_list block_item
+
+    4 block_item: H1
+    5           | H2
+    6           | H3
+    7           | H4
+    8           | H5
+    9           | H6
+   10           | line
+   11           | quote
+   12           | list
+   13           | code
+
+   14 code: CODE
+
+   15 list: LIST line
+   16     | LIST quote
+
+   17 quote: '>' line
+   18      | '>' quote
+
+   19 line: inline_list '\n'
+
+   20 inline_list: inline_item
+   21            | inline_list inline_item
+
+   22 inline_item: string
+   23            | italic
+
+   24 italic: '*' string '*'
+
+   25 string: STRING
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'\n' (10) 19
+'*' (42) 24
+'>' (62) 17 18
+error (256)
+STRING (258) 25
+H1 (259) 4
+H2 (260) 5
+H3 (261) 6
+H4 (262) 7
+H5 (263) 8
+H6 (264) 9
+LIST (265) 15 16
+CODE (266) 14
+
+
+Nonterminals, with rules where they appear
+
+$accept (15)
+    左： 0
+block (16)
+    左： 1, 右： 0
+block_list (17)
+    左： 2 3, 右： 1 3
+block_item (18)
+    左： 4 5 6 7 8 9 10 11 12 13, 右： 2 3
+code (19)
+    左： 14, 右： 13
+list (20)
+    左： 15 16, 右： 12
+quote (21)
+    左： 17 18, 右： 11 16 18
+line (22)
+    左： 19, 右： 10 15 17
+inline_list (23)
+    左： 20 21, 右： 19 21
+inline_item (24)
+    左： 22 23, 右： 20 21
+italic (25)
+    左： 24, 右： 23
+string (26)
+    左： 25, 右： 22 24
+
+
+State 0
+
+    0 $accept: . block $end
+
+    STRING  shift, and go to state 1
+    H1      shift, and go to state 2
+    H2      shift, and go to state 3
+    H3      shift, and go to state 4
+    H4      shift, and go to state 5
+    H5      shift, and go to state 6
+    H6      shift, and go to state 7
+    LIST    shift, and go to state 8
+    CODE    shift, and go to state 9
+    '>'     shift, and go to state 10
+    '*'     shift, and go to state 11
+
+    block        转到状态 12
+    block_list   转到状态 13
+    block_item   转到状态 14
+    code         转到状态 15
+    list         转到状态 16
+    quote        转到状态 17
+    line         转到状态 18
+    inline_list  转到状态 19
+    inline_item  转到状态 20
+    italic       转到状态 21
+    string       转到状态 22
+
+
+State 1
+
+   25 string: STRING .
+
+    $default  reduce using rule 25 (string)
+
+
+State 2
+
+    4 block_item: H1 .
+
+    $default  reduce using rule 4 (block_item)
+
+
+State 3
+
+    5 block_item: H2 .
+
+    $default  reduce using rule 5 (block_item)
+
+
+State 4
+
+    6 block_item: H3 .
+
+    $default  reduce using rule 6 (block_item)
+
+
+State 5
+
+    7 block_item: H4 .
+
+    $default  reduce using rule 7 (block_item)
+
+
+State 6
+
+    8 block_item: H5 .
+
+    $default  reduce using rule 8 (block_item)
+
+
+State 7
+
+    9 block_item: H6 .
+
+    $default  reduce using rule 9 (block_item)
+
+
+State 8
+
+   15 list: LIST . line
+   16     | LIST . quote
+
+    STRING  shift, and go to state 1
+    '>'     shift, and go to state 10
+    '*'     shift, and go to state 11
+
+    quote        转到状态 23
+    line         转到状态 24
+    inline_list  转到状态 19
+    inline_item  转到状态 20
+    italic       转到状态 21
+    string       转到状态 22
+
+
+State 9
+
+   14 code: CODE .
+
+    $default  reduce using rule 14 (code)
+
+
+State 10
+
+   17 quote: '>' . line
+   18      | '>' . quote
+
+    STRING  shift, and go to state 1
+    '>'     shift, and go to state 10
+    '*'     shift, and go to state 11
+
+    quote        转到状态 25
+    line         转到状态 26
+    inline_list  转到状态 19
+    inline_item  转到状态 20
+    italic       转到状态 21
+    string       转到状态 22
+
+
+State 11
+
+   24 italic: '*' . string '*'
+
+    STRING  shift, and go to state 1
+
+    string  转到状态 27
+
+
+State 12
+
+    0 $accept: block . $end
+
+    $end  shift, and go to state 28
+
+
+State 13
+
+    1 block: block_list .
+    3 block_list: block_list . block_item
+
+    STRING  shift, and go to state 1
+    H1      shift, and go to state 2
+    H2      shift, and go to state 3
+    H3      shift, and go to state 4
+    H4      shift, and go to state 5
+    H5      shift, and go to state 6
+    H6      shift, and go to state 7
+    LIST    shift, and go to state 8
+    CODE    shift, and go to state 9
+    '>'     shift, and go to state 10
+    '*'     shift, and go to state 11
+
+    $default  reduce using rule 1 (block)
+
+    block_item   转到状态 29
+    code         转到状态 15
+    list         转到状态 16
+    quote        转到状态 17
+    line         转到状态 18
+    inline_list  转到状态 19
+    inline_item  转到状态 20
+    italic       转到状态 21
+    string       转到状态 22
+
+
+State 14
+
+    2 block_list: block_item .
+
+    $default  reduce using rule 2 (block_list)
+
+
+State 15
+
+   13 block_item: code .
+
+    $default  reduce using rule 13 (block_item)
+
+
+State 16
+
+   12 block_item: list .
+
+    $default  reduce using rule 12 (block_item)
+
+
+State 17
+
+   11 block_item: quote .
+
+    $default  reduce using rule 11 (block_item)
+
+
+State 18
+
+   10 block_item: line .
+
+    $default  reduce using rule 10 (block_item)
+
+
+State 19
+
+   19 line: inline_list . '\n'
+   21 inline_list: inline_list . inline_item
+
+    STRING  shift, and go to state 1
+    '\n'    shift, and go to state 30
+    '*'     shift, and go to state 11
+
+    inline_item  转到状态 31
+    italic       转到状态 21
+    string       转到状态 22
+
+
+State 20
+
+   20 inline_list: inline_item .
+
+    $default  reduce using rule 20 (inline_list)
+
+
+State 21
+
+   23 inline_item: italic .
+
+    $default  reduce using rule 23 (inline_item)
+
+
+State 22
+
+   22 inline_item: string .
+
+    $default  reduce using rule 22 (inline_item)
+
+
+State 23
+
+   16 list: LIST quote .
+
+    $default  reduce using rule 16 (list)
+
+
+State 24
+
+   15 list: LIST line .
+
+    $default  reduce using rule 15 (list)
+
+
+State 25
+
+   18 quote: '>' quote .
+
+    $default  reduce using rule 18 (quote)
+
+
+State 26
+
+   17 quote: '>' line .
+
+    $default  reduce using rule 17 (quote)
+
+
+State 27
+
+   24 italic: '*' string . '*'
+
+    '*'  shift, and go to state 32
+
+
+State 28
+
+    0 $accept: block $end .
+
+    $default  接受
+
+
+State 29
+
+    3 block_list: block_list block_item .
+
+    $default  reduce using rule 3 (block_list)
+
+
+State 30
+
+   19 line: inline_list '\n' .
+
+    $default  reduce using rule 19 (line)
+
+
+State 31
+
+   21 inline_list: inline_list inline_item .
+
+    $default  reduce using rule 21 (inline_list)
+
+
+State 32
+
+   24 italic: '*' string '*' .
+
+    $default  reduce using rule 24 (italic)

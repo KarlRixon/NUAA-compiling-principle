@@ -1,0 +1,14 @@
+/*	Calculate factorial
+*	Test while loop and standard output
+*/
+int a;
+a= 6;
+//write(undecl);	// Error: usage before declared
+real factor;
+factor = 1;			// Warinig: assign int to real variable
+while( a <> 0 )
+{
+	factor = factor * a;	// Warn and cast
+	a = a -1;
+}
+write( factor );

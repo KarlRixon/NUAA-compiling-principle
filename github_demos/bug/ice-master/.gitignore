@@ -1,0 +1,10 @@
+/ice
+*.o
+*.ice.cc
+*.swp
+/src/ice/parser/_parser.cc
+/src/ice/parser/_parser.hh
+/src/ice/parser/_scanner.cc
+examples/*
+!examples/*.ice
+

@@ -1,0 +1,6 @@
+kLang 1.0
+type foo
+type bar
+foo 1
+bar 2
+end

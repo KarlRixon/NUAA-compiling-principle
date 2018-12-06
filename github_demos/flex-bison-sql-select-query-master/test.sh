@@ -1,0 +1,10 @@
+echo 'query'; cat ex1.sql; echo 'parser result'; cat ex1.sql | ./a.out
+echo 'query'; cat ex2.sql; echo 'parser result'; cat ex2.sql | ./a.out
+echo 'query'; cat ex3.sql; echo 'parser result'; cat ex3.sql | ./a.out
+echo 'query'; cat ex4.sql; echo 'parser result'; cat ex4.sql | ./a.out
+echo 'query'; cat ex5.sql; echo 'parser result'; cat ex5.sql | ./a.out
+echo 'query'; cat ex5.sql; echo 'parser result'; cat ex5.sql | ./a.out
+echo 'query'; cat ex7.sql; echo 'parser result'; cat ex7.sql | ./a.out
+echo 'query'; cat ex8.sql; echo 'parser result'; cat ex8.sql | ./a.out
+echo 'query'; cat ex9.sql; echo 'parser result'; cat ex9.sql | ./a.out
+echo 'query'; cat ex10.sql; echo 'parser result'; cat ex10.sql | ./a.out
